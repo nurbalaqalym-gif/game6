@@ -27,7 +27,7 @@ class LunaShop extends StatelessWidget {
 }
 
 // ============================================================
-// PRODUCT
+// PRODUCT MODEL
 // ============================================================
 
 class Product {
@@ -49,7 +49,7 @@ class Product {
 }
 
 // ============================================================
-// DATA
+// PRODUCTS
 // ============================================================
 
 final List<Product> allProducts = [
@@ -127,7 +127,7 @@ final List<Product> allProducts = [
 ];
 
 // ============================================================
-// MAIN APP
+// MAIN SHOP
 // ============================================================
 
 class ShopHome extends StatefulWidget {
@@ -185,7 +185,6 @@ class _ShopHomeState extends State<ShopHome> {
   Widget build(BuildContext context) {
     final pages = [
       HomePage(
-        favorites: favorites,
         onProductTap: openProduct,
         onFavorite: toggleFavorite,
         isFavorite: isFavorite,
@@ -196,7 +195,6 @@ class _ShopHomeState extends State<ShopHome> {
               builder: (_) => CategoryPage(
                 category: category,
                 onProductTap: openProduct,
-                favorites: favorites,
                 onFavorite: toggleFavorite,
                 isFavorite: isFavorite,
               ),
@@ -204,57 +202,47 @@ class _ShopHomeState extends State<ShopHome> {
           );
         },
       ),
-
       CatalogPage(
         products: allProducts,
         onProductTap: openProduct,
-        favorites: favorites,
         onFavorite: toggleFavorite,
         isFavorite: isFavorite,
       ),
-
       FavoritesPage(
         favorites: favorites,
         onProductTap: openProduct,
         onFavorite: toggleFavorite,
         isFavorite: isFavorite,
       ),
-
       CartPage(
         cart: cart,
         onChanged: () {
           setState(() {});
         },
       ),
-
       const ProfilePage(),
     ];
 
     return Scaffold(
       body: pages[currentPage],
-
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPage,
-
         onDestinationSelected: (index) {
           setState(() {
             currentPage = index;
           });
         },
-
         destinations: [
           const NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Home',
           ),
-
           const NavigationDestination(
             icon: Icon(Icons.grid_view_outlined),
             selectedIcon: Icon(Icons.grid_view),
             label: 'Catalog',
           ),
-
           NavigationDestination(
             icon: Badge(
               isLabelVisible: favorites.isNotEmpty,
@@ -264,7 +252,6 @@ class _ShopHomeState extends State<ShopHome> {
             selectedIcon: const Icon(Icons.favorite),
             label: 'Favorites',
           ),
-
           NavigationDestination(
             icon: Badge(
               isLabelVisible: cart.isNotEmpty,
@@ -274,7 +261,6 @@ class _ShopHomeState extends State<ShopHome> {
             selectedIcon: const Icon(Icons.shopping_bag),
             label: 'Cart',
           ),
-
           const NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
@@ -291,7 +277,6 @@ class _ShopHomeState extends State<ShopHome> {
 // ============================================================
 
 class HomePage extends StatelessWidget {
-  final List<Product> favorites;
   final Function(Product) onProductTap;
   final Function(Product) onFavorite;
   final bool Function(Product) isFavorite;
@@ -299,7 +284,6 @@ class HomePage extends StatelessWidget {
 
   const HomePage({
     super.key,
-    required this.favorites,
     required this.onProductTap,
     required this.onFavorite,
     required this.isFavorite,
@@ -335,7 +319,6 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   Container(
                     width: 48,
                     height: 48,
@@ -449,6 +432,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
+          // PRODUCT GRID
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverGrid(
@@ -547,7 +531,6 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -564,7 +547,6 @@ class ProductCard extends StatelessWidget {
                   child: Image.network(
                     product.image,
                     fit: BoxFit.cover,
-
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) {
                         return child;
@@ -572,7 +554,6 @@ class ProductCard extends StatelessWidget {
 
                       return const Center(child: CircularProgressIndicator());
                     },
-
                     errorBuilder: (context, error, stackTrace) {
                       return const Center(
                         child: Icon(
@@ -584,7 +565,6 @@ class ProductCard extends StatelessWidget {
                     },
                   ),
                 ),
-
                 Positioned(
                   top: 10,
                   right: 10,
@@ -608,25 +588,19 @@ class ProductCard extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 8),
-
           Text(
             product.category,
             style: const TextStyle(color: Colors.grey, fontSize: 12),
           ),
-
           const SizedBox(height: 3),
-
           Text(
             product.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
           ),
-
           const SizedBox(height: 4),
-
           Text(
             '\$${product.price.toStringAsFixed(0)}',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
@@ -644,7 +618,6 @@ class ProductCard extends StatelessWidget {
 class CategoryPage extends StatelessWidget {
   final String category;
   final Function(Product) onProductTap;
-  final List<Product> favorites;
   final Function(Product) onFavorite;
   final bool Function(Product) isFavorite;
 
@@ -652,7 +625,6 @@ class CategoryPage extends StatelessWidget {
     super.key,
     required this.category,
     required this.onProductTap,
-    required this.favorites,
     required this.onFavorite,
     required this.isFavorite,
   });
@@ -698,7 +670,6 @@ class CategoryPage extends StatelessWidget {
 class CatalogPage extends StatefulWidget {
   final List<Product> products;
   final Function(Product) onProductTap;
-  final List<Product> favorites;
   final Function(Product) onFavorite;
   final bool Function(Product) isFavorite;
 
@@ -706,7 +677,6 @@ class CatalogPage extends StatefulWidget {
     super.key,
     required this.products,
     required this.onProductTap,
-    required this.favorites,
     required this.onFavorite,
     required this.isFavorite,
   });
@@ -735,9 +705,7 @@ class _CatalogPageState extends State<CatalogPage> {
               'Catalog',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 20),
-
             TextField(
               onChanged: (value) {
                 setState(() {
@@ -755,9 +723,7 @@ class _CatalogPageState extends State<CatalogPage> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             Expanded(
               child: GridView.builder(
                 itemCount: result.length,
@@ -820,7 +786,6 @@ class FavoritesPage extends StatelessWidget {
                 ),
               ),
             ),
-
             const Expanded(
               child: Center(
                 child: Column(
@@ -837,7 +802,7 @@ class FavoritesPage extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      'Tap ❤️ on products you like',
+                      'Tap the heart on products you like',
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
@@ -859,9 +824,7 @@ class FavoritesPage extends StatelessWidget {
               'Favorites',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 20),
-
             Expanded(
               child: GridView.builder(
                 itemCount: favorites.length,
@@ -912,7 +875,6 @@ class ProductDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F6F3),
-
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: const Text('Product details'),
@@ -926,7 +888,6 @@ class ProductDetails extends StatelessWidget {
           ),
         ],
       ),
-
       body: Column(
         children: [
           Expanded(
@@ -946,7 +907,7 @@ class ProductDetails extends StatelessWidget {
                     child: Image.network(
                       product.image,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) {
+                      errorBuilder: (context, error, stackTrace) {
                         return const Center(
                           child: Icon(
                             Icons.image,
@@ -957,7 +918,6 @@ class ProductDetails extends StatelessWidget {
                       },
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(22),
                     child: Column(
@@ -971,9 +931,7 @@ class ProductDetails extends StatelessWidget {
                             letterSpacing: 1.5,
                           ),
                         ),
-
                         const SizedBox(height: 8),
-
                         Text(
                           product.name,
                           style: const TextStyle(
@@ -981,9 +939,7 @@ class ProductDetails extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
                         const SizedBox(height: 10),
-
                         Text(
                           '\$${product.price.toStringAsFixed(0)}',
                           style: const TextStyle(
@@ -991,9 +947,7 @@ class ProductDetails extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
                         const SizedBox(height: 25),
-
                         const Text(
                           'Description',
                           style: TextStyle(
@@ -1001,9 +955,7 @@ class ProductDetails extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
                         const SizedBox(height: 10),
-
                         Text(
                           product.description,
                           style: const TextStyle(
@@ -1012,9 +964,7 @@ class ProductDetails extends StatelessWidget {
                             fontSize: 15,
                           ),
                         ),
-
                         const SizedBox(height: 25),
-
                         const Text(
                           'Size',
                           style: TextStyle(
@@ -1022,9 +972,7 @@ class ProductDetails extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
                         const SizedBox(height: 12),
-
                         Row(
                           children: [
                             _size('S'),
@@ -1040,7 +988,6 @@ class ProductDetails extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
             color: Colors.white,
@@ -1053,7 +1000,7 @@ class ProductDetails extends StatelessWidget {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Added to cart 🛒'),
+                      content: Text('Added to cart'),
                       duration: Duration(seconds: 1),
                     ),
                   );
@@ -1107,7 +1054,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  Map<int, int> quantities = {};
+  final Map<int, int> quantities = {};
 
   int quantity(Product product) {
     return quantities[product.id] ?? 1;
@@ -1135,23 +1082,19 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     if (widget.cart.isEmpty) {
-      return SafeArea(
+      return const SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.shopping_bag_outlined,
-                size: 85,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 15),
-              const Text(
+              Icon(Icons.shopping_bag_outlined, size: 85, color: Colors.grey),
+              SizedBox(height: 15),
+              Text(
                 'Your cart is empty',
                 style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 7),
-              const Text(
+              SizedBox(height: 7),
+              Text(
                 'Add products to your cart',
                 style: TextStyle(color: Colors.grey),
               ),
@@ -1172,7 +1115,6 @@ class _CartPageState extends State<CartPage> {
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
           ),
-
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1196,11 +1138,17 @@ class _CartPageState extends State<CartPage> {
                           width: 90,
                           height: 90,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 90,
+                              height: 90,
+                              color: Colors.grey.shade200,
+                              child: const Icon(Icons.image_outlined),
+                            );
+                          },
                         ),
                       ),
-
                       const SizedBox(width: 13),
-
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1214,18 +1162,14 @@ class _CartPageState extends State<CartPage> {
                                 fontSize: 15,
                               ),
                             ),
-
                             const SizedBox(height: 7),
-
                             Text(
                               '\$${product.price.toStringAsFixed(0)}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-
                             const SizedBox(height: 8),
-
                             Row(
                               children: [
                                 _quantityButton(Icons.remove, () {
@@ -1237,7 +1181,6 @@ class _CartPageState extends State<CartPage> {
                                     }
                                   });
                                 }),
-
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
@@ -1249,7 +1192,6 @@ class _CartPageState extends State<CartPage> {
                                     ),
                                   ),
                                 ),
-
                                 _quantityButton(Icons.add, () {
                                   setState(() {
                                     quantities[product.id] =
@@ -1261,7 +1203,6 @@ class _CartPageState extends State<CartPage> {
                           ],
                         ),
                       ),
-
                       IconButton(
                         onPressed: () => remove(product),
                         icon: const Icon(
@@ -1275,7 +1216,6 @@ class _CartPageState extends State<CartPage> {
               },
             ),
           ),
-
           Container(
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
@@ -1303,9 +1243,7 @@ class _CartPageState extends State<CartPage> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 15),
-
                 SizedBox(
                   width: double.infinity,
                   height: 55,
@@ -1372,9 +1310,9 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
-  final nameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
-  final addressController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
 
   @override
   void dispose() {
@@ -1384,7 +1322,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   void order() {
-    if (nameController.text.isEmpty || addressController.text.isEmpty) {
+    if (nameController.text.trim().isEmpty ||
+        addressController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
@@ -1394,7 +1333,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => OrderSuccessPage(name: nameController.text),
+        builder: (_) => OrderSuccessPage(name: nameController.text.trim()),
       ),
     );
   }
@@ -1403,7 +1342,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Checkout')),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -1413,9 +1351,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               'Delivery information',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 20),
-
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
@@ -1428,11 +1364,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ),
               ),
             ),
-
             const SizedBox(height: 15),
-
             TextField(
               controller: addressController,
+              maxLines: 2,
               decoration: const InputDecoration(
                 labelText: 'Delivery address',
                 prefixIcon: Icon(Icons.location_on_outlined),
@@ -1442,11 +1377,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              maxLines: 2,
             ),
-
             const SizedBox(height: 30),
-
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -1470,9 +1402,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ],
               ),
             ),
-
             const SizedBox(height: 25),
-
             SizedBox(
               width: double.infinity,
               height: 58,
@@ -1496,7 +1426,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
 }
 
 // ============================================================
-// SUCCESS
+// ORDER SUCCESS
 // ============================================================
 
 class OrderSuccessPage extends StatelessWidget {
@@ -1522,25 +1452,19 @@ class OrderSuccessPage extends StatelessWidget {
                 ),
                 child: const Icon(Icons.check, size: 60, color: Colors.green),
               ),
-
               const SizedBox(height: 25),
-
               const Text(
                 'Order confirmed!',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 10),
-
               Text(
                 'Thank you, $name!',
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.grey, fontSize: 17),
               ),
-
               const SizedBox(height: 40),
-
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -1594,9 +1518,7 @@ class ProfilePage extends StatelessWidget {
               'Profile',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 30),
-
             Center(
               child: Column(
                 children: [
@@ -1609,16 +1531,12 @@ class ProfilePage extends StatelessWidget {
                     ),
                     child: const Icon(Icons.person, size: 55),
                   ),
-
                   const SizedBox(height: 15),
-
                   const Text(
                     'Welcome!',
                     style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                   ),
-
                   const SizedBox(height: 5),
-
                   const Text(
                     'LUNA SHOP customer',
                     style: TextStyle(color: Colors.grey),
@@ -1626,19 +1544,12 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 35),
-
             _item(context, Icons.shopping_bag_outlined, 'My Orders'),
-
             _item(context, Icons.location_on_outlined, 'Delivery Address'),
-
             _item(context, Icons.favorite_border, 'My Favorites'),
-
             _item(context, Icons.notifications_outlined, 'Notifications'),
-
             _item(context, Icons.settings_outlined, 'Settings'),
-
             _item(context, Icons.help_outline, 'Help & Support'),
           ],
         ),
@@ -1655,7 +1566,6 @@ class ProfilePage extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () => showMessage(context, title),
-
         leading: Container(
           width: 42,
           height: 42,
@@ -1665,9 +1575,7 @@ class ProfilePage extends StatelessWidget {
           ),
           child: Icon(icon),
         ),
-
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-
         trailing: const Icon(Icons.arrow_forward_ios, size: 15),
       ),
     );
